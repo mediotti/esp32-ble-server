@@ -27,7 +27,7 @@ static int device_write(uint16_t conn_handle, uint16_t attr_handle, struct ble_g
 // Read data from ESP32 defined as server
 static int device_read(uint16_t con_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
 {
-    os_mbuf_append(ctxt->om, "Data from the server", strlen("Data from the server"));
+    os_mbuf_append(ctxt->om, "Ola", strlen("Ola"));
     return 0;
 }
 
@@ -35,12 +35,12 @@ static int device_read(uint16_t con_handle, uint16_t attr_handle, struct ble_gat
 // UUID - Universal Unique Identifier
 static const struct ble_gatt_svc_def gatt_svcs[] = {
     {.type = BLE_GATT_SVC_TYPE_PRIMARY,
-     .uuid = BLE_UUID16_DECLARE(0x180),                 // Define UUID for device type
+     .uuid = BLE_UUID16_DECLARE(0x0190),                 // Define UUID for device type
      .characteristics = (struct ble_gatt_chr_def[]){
-         {.uuid = BLE_UUID16_DECLARE(0xFEF4),           // Define UUID for reading
+         {.uuid = BLE_UUID16_DECLARE(0x0191),           // Define UUID for reading
           .flags = BLE_GATT_CHR_F_READ,
           .access_cb = device_read},
-         {.uuid = BLE_UUID16_DECLARE(0xDEAD),           // Define UUID for writing
+         {.uuid = BLE_UUID16_DECLARE(0x546D),           // Define UUID for writing
           .flags = BLE_GATT_CHR_F_WRITE,
           .access_cb = device_write},
          {0}}},
@@ -113,7 +113,7 @@ void app_main(void)
     nvs_flash_init();                           // 1 - Initialize NVS flash using
     esp_nimble_hci_and_controller_init();       // 2 - Initialize ESP controller
     nimble_port_init();                         // 3 - Initialize the host stack
-    ble_svc_gap_device_name_set("G4T Gateway"); // 4 - Initialize NimBLE configuration - server name
+    ble_svc_gap_device_name_set("G4T_Gateway"); // 4 - Initialize NimBLE configuration - server name
     ble_svc_gap_init();                         // 4 - Initialize NimBLE configuration - gap service
     ble_svc_gatt_init();                        // 4 - Initialize NimBLE configuration - gatt service
     ble_gatts_count_cfg(gatt_svcs);             // 4 - Initialize NimBLE configuration - config gatt services
@@ -121,4 +121,3 @@ void app_main(void)
     ble_hs_cfg.sync_cb = ble_app_on_sync;       // 5 - Initialize application
     nimble_port_freertos_init(host_task);       // 6 - Run the thread
 }
-
